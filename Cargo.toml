@@ -1,0 +1,13 @@
+[package]
+name = "epgrab"
+version = "0.1.0"
+authors = ["Hui-Hong You <hiroshi@ghostsinthelab.org>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.33.0"
+dvbv5 = "0.0.0"
+dvbv5-sys = "0.0.0"
+va-ts = "0.0.3"
