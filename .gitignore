@@ -1,3 +1,6 @@
+# IDE/editor internal files
+.vscode/
+
 # Object files
 *.o
 
