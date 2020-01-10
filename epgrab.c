@@ -28,14 +28,22 @@
 #include <mxml.h>
 
 int main( int argc, char *argv[] ) {
-    // Find DVB devices
+    int verbose = 1;
+    // Prepare to find DVB devices
 	struct dvb_device *dvb;
 	struct dvb_dev_list *dvb_dev;
     dvb = dvb_dev_alloc();
+    dvb_dev_set_log(dvb, verbose, NULL);
 
-    if ( dvb_dev_find(dvb, NULL, NULL) == 0 ) {
-        printf("Devices: %d\n", dvb->num_devices);
+    dvb_dev_find(dvb, NULL, NULL);
+
+    if (dvb->num_devices == 0) {
+        printf("0 frontend device, abort.\n");
+        dvb_dev_free(dvb);
+        exit(1);
     }
+
+    // Use the specified device from args or try to auto-detect the first available device later
 
     // Find first frontend device
 	dvb_dev = dvb_dev_seek_by_adapter(dvb, 0, 0, DVB_DEVICE_FRONTEND);
