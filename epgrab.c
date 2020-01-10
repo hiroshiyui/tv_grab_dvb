@@ -18,32 +18,35 @@
     along with EPGrab.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
-#include <ctype.h>
-#include <errno.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <argp.h>
 
 #include "config.h"
 
 #include <linux/dvb/dmx.h>
-#include "libdvbv5/dvb-file.h"
-#include "libdvbv5/dvb-demux.h"
-#include "libdvbv5/dvb-dev.h"
-#include "libdvbv5/dvb-v5-std.h"
-#include "libdvbv5/dvb-scan.h"
-#include "libdvbv5/countries.h"
-
-char doc[] = "EPGrab, an utility which decodes DVB EPG data";
-struct argp argp = { NULL, NULL, NULL, doc };
+#include <libdvbv5/dvb-dev.h>
 
 int main( int argc, char *argv[] ) {
-    printf("Hello! This is EPGrab.\n");
-    argp_parse( &argp, argc, argv, 0, 0, NULL );
+    // Find DVB devices
+	struct dvb_device *dvb;
+	struct dvb_dev_list *dvb_dev;
+    dvb = dvb_dev_alloc();
+
+    if ( dvb_dev_find(dvb, NULL, NULL) == 0 ) {
+        printf("Devices: %d\n", dvb->num_devices);
+    }
+
+    // Find first frontend device
+	dvb_dev = dvb_dev_seek_by_adapter(dvb, 0, 0, DVB_DEVICE_FRONTEND);
+    if (dvb_dev != NULL) {
+        printf("Device: %s (%s)\n", dvb_dev->sysname, dvb_dev->path);
+    }
+
+    // Find first demus device
+	dvb_dev = dvb_dev_seek_by_adapter(dvb, 0, 0, DVB_DEVICE_DEMUX);
+    if (dvb_dev != NULL) {
+        printf("Device: %s (%s)\n", dvb_dev->sysname, dvb_dev->path);
+    }
+
+    dvb_dev_free(dvb);
     return 0;
 }
